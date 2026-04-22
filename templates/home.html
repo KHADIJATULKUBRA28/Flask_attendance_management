@@ -3,7 +3,8 @@
 {% block body %}
 <div class="home-hero">
     <div class="hero-content">
-        <h1>Welcome to Attendance Management System</h1>
+        <h1>Welcome {{ user.name if user else "" }} </h1>
+        <h1>Attendance Management System</h1>
         <p class="subtitle">Effortlessly track, manage, and analyze attendance for your organization.</p>
         <a href="/signup" class="cta-btn">Get Started</a>
     </div>
