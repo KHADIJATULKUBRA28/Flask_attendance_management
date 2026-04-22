@@ -1,12 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>About Us</h1>
-    <p>This is the about page of the Attendance Management System.</p>
-</body>
-</html>
+{% extends 'Base.html' %}
+
+{% block body %}    
+<div class="about-hero">
+    <div class="hero-content">
+        <h1>About Attendance Management System</h1>
+        <p class="subtitle">Your trusted solution for efficient attendance tracking and management.</p>
+    </div>
+
+<section class="about-section">
+    <h2>Our Mission</h2>
+    <p>At Attendance Management System, our mission is to provide a user-friendly and reliable platform that simplifies attendance tracking for schools, businesses, and organizations. We aim to enhance productivity and streamline administrative tasks through innovative technology.</p>
+
+    <h2>Our Story</h2>
+    <p>Founded in 2026, Attendance Management System was born out of the need for a more efficient way to manage attendance. Our team of developers and educators came together to create a solution that addresses the challenges of traditional attendance methods while embracing modern technology.</p>
+
+    <h2>Why Choose Us?</h2>
+    <ul>
+        <li><strong>Easy to Use:</strong> Our intuitive interface makes it simple for users of all technical levels to navigate and utilize our platform effectively.</li>
+        <li><strong>Comprehensive Features:</strong> From real-time attendance tracking to detailed reporting, we offer a wide range of features to meet your needs.</li>
+        <li><strong>Secure & Private:</strong> We prioritize the security and privacy of your data with industry-standard measures in place.</li>
+        <li><strong>Dedicated Support:</strong> Our support team is always ready to assist you with any questions or issues you may encounter.</li>
+    </ul>
+
+    <h2>Contact Us</h2>
+    <p>If you have any questions or would like to learn more about our services, please don't hesitate to contact us at <a href="mailto:info@attendancemanagement.com">info@attendancemanagement.com</a>.</p>   
+</section>
+
+{% endblock %}
