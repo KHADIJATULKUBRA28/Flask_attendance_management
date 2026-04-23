@@ -1,17 +1,25 @@
 from flask import request
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, session as flask_session
 from models import User
 from database import db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-session = {}
+app.secret_key = 'replace-with-a-secure-key'
+#what is this key for? It is used to sign the session cookies to prevent tampering. You should replace it with a secure, random key in a production environment.
 
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+@app.context_processor
+def inject_user():
+    user_id = flask_session.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        return { 'user': user }
+    return { 'user': None }
 
 @app.route("/")
 def hello_world():
@@ -46,19 +54,18 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        user=User.query.filter_by(email=email,password=password).first()
+        user = User.query.filter_by(email=email,password=password).first()
         if user:
-            session[user.id]=user
-            print(session)
-            return render_template("home.html",user=user)
+            flask_session['user_id'] = user.id
+            return redirect(url_for('hello_world'))
         else:
             return render_template("login.html")
     return render_template("login.html")
 
-@app.route("/logout/<int:user_id>")
-def logout(user_id):
-    session.pop(user_id,None)
-    return render_template("home.html",user=None)
+@app.route("/logout")
+def logout():
+    flask_session.pop('user_id', None)
+    return redirect(url_for('hello_world'))
 
 if __name__ == "__main__":
     app.run(debug=True,host="0.0.0.0",port=5000)
