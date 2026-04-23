@@ -1,20 +1,32 @@
 {% extends 'base.html' %}
+{% block title %}Login — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/forms.css">
+{% endblock %}
 
 {% block body %}
-    <h1>Welcome to the Attendance Management System</h1>
-    <p>This is the Login page of our application. Here you can find information about our system and its features.</p>
-
-    <form method="POST" action="/login">
-        <p>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email">
-        </p>
-        <p>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-        </p>
-        <p>
-            <input type="submit" value="Login">
-        </p>
-    </form>
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="form-icon">🔑</div>
+            <h1>Welcome Back</h1>
+            <p>Log in to your FlowDesk account</p>
+        </div>
+        <form method="POST" action="/login" id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="form-submit" id="login-submit">Log In</button>
+        </form>
+        <div class="form-footer">
+            <p>Don't have an account? <a href="/signup">Sign up</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}

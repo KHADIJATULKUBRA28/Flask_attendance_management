@@ -1,35 +1,72 @@
 {% extends 'base.html' %}
+{% block title %}FlowDesk — Productivity Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
 
 {% block body %}
 <div class="home-hero">
+    <div class="hero-particles" aria-hidden="true">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
     <div class="hero-content">
-        <h1>Welcome {{ user.name if user else "" }} </h1>
-        <h1>Attendance Management System</h1>
-        <p class="subtitle">Effortlessly track, manage, and analyze attendance for your organization.</p>
-        <a href="/signup" class="cta-btn">Get Started</a>
+        <div class="hero-badge">⚡ Your Personal Productivity Hub</div>
+        <h1>Track Attendance.<br>Manage Tasks.<br><span class="gradient-text">Stay Productive.</span></h1>
+        <p class="subtitle">FlowDesk combines attendance tracking with powerful task management and daily progress journaling — all in one beautiful dashboard.</p>
+        <div class="hero-actions">
+            <a href="/signup" class="cta-btn cta-primary" id="hero-signup">Get Started Free</a>
+            <a href="/about" class="cta-btn cta-secondary" id="hero-about">Learn More</a>
+        </div>
     </div>
 </div>
 
-<section class="features-section">
-    <h2>Features</h2>
+<section class="features-section" id="features">
+    <h2 class="section-title">Everything You Need</h2>
+    <p class="section-subtitle">A complete productivity toolkit in one place</p>
     <div class="features-grid">
         <div class="feature-card">
-            <h3>Easy Attendance Tracking</h3>
-            <p>Mark and view attendance with just a few clicks. Simple, fast, and reliable.</p>
+            <div class="feature-icon">✅</div>
+            <h3>Attendance Tracking</h3>
+            <p>One-click check-in/check-out with calendar heatmaps and monthly stats. Never miss a day.</p>
         </div>
         <div class="feature-card">
-            <h3>Comprehensive Reports</h3>
-            <p>Generate detailed attendance reports for students, employees, or members.</p>
+            <div class="feature-icon">📋</div>
+            <h3>Task Management</h3>
+            <p>Create, prioritise, and track tasks with progress bars. Filter by status and priority.</p>
         </div>
         <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Progress Analytics</h3>
+            <p>Visual dashboards with donut charts, progress rings, and weekly activity trends.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>Daily Updates</h3>
+            <p>Journal your daily work — log what you did, hours spent, and track progress over time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔥</div>
+            <h3>Streak Counter</h3>
+            <p>Build momentum with consecutive attendance streaks and productivity scoring.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
             <h3>Secure & Private</h3>
-            <p>Your data is protected with industry-standard security and privacy measures.</p>
+            <p>Your data stays private with hashed passwords and per-user isolation.</p>
         </div>
     </div>
 </section>
 
-<section class="about-section">
-    <h2>Why Choose Us?</h2>
-    <p>Our Attendance Management System is designed for simplicity and efficiency. Whether you manage a school, business, or club, our platform adapts to your needs and grows with you.</p>
+<section class="cta-section">
+    <div class="cta-card">
+        <h2>Ready to boost your productivity?</h2>
+        <p>Join FlowDesk today and start tracking your progress.</p>
+        <a href="/signup" class="cta-btn cta-primary" id="cta-bottom-signup">Create Free Account</a>
+    </div>
 </section>
 {% endblock %}

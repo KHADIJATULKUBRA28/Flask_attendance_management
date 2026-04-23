@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard">
+    <div class="dash-header">
+        <div>
+            <h1>Good {{ 'morning' if now is not defined or True }}{{ '' }}, {{ user.name }}!</h1>
+            <p class="dash-date">{{ now if now is defined else '' }}Today's Overview</p>
+        </div>
+    </div>
+
+    <!-- Top Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card stat-attendance">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ streak }}</span>
+                <span class="stat-label">Day Streak</span>
+            </div>
+        </div>
+        <div class="stat-card stat-total">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ total_tasks }}</span>
+                <span class="stat-label">Total Tasks</span>
+            </div>
+        </div>
+        <div class="stat-card stat-progress">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ overall_progress }}%</span>
+                <span class="stat-label">Overall Progress</span>
+            </div>
+        </div>
+        <div class="stat-card stat-done">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ done_tasks }}</span>
+                <span class="stat-label">Completed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dash-grid">
+        <!-- Attendance Card -->
+        <div class="dash-card attendance-card">
+            <h2>📅 Today's Attendance</h2>
+            <div class="attendance-status">
+                {% if today_attendance and today_attendance.check_in %}
+                    <div class="check-badge checked-in">
+                        <span class="check-icon">✓</span>
+                        <div>
+                            <strong>Checked In</strong>
+                            <span class="check-time">{{ today_attendance.check_in.strftime('%I:%M %p') }}</span>
+                        </div>
+                    </div>
+                    {% if today_attendance.check_out %}
+                    <div class="check-badge checked-out">
+                        <span class="check-icon">✓</span>
+                        <div>
+                            <strong>Checked Out</strong>
+                            <span class="check-time">{{ today_attendance.check_out.strftime('%I:%M %p') }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <form method="POST" action="/attendance/checkout">
+                        <button type="submit" class="btn-checkout" id="dash-checkout-btn">Check Out</button>
+                    </form>
+                    {% endif %}
+                {% else %}
+                    <p class="no-checkin">You haven't checked in yet today.</p>
+                    <form method="POST" action="/attendance/checkin">
+                        <button type="submit" class="btn-checkin" id="dash-checkin-btn">Check In Now</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Task Distribution Chart -->
+        <div class="dash-card chart-card">
+            <h2>📊 Task Distribution</h2>
+            <div class="chart-container">
+                <canvas id="taskChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot todo"></span> To Do ({{ todo_tasks }})</span>
+                <span class="legend-item"><span class="legend-dot in-progress"></span> In Progress ({{ in_progress_tasks }})</span>
+                <span class="legend-item"><span class="legend-dot done"></span> Done ({{ done_tasks }})</span>
+            </div>
+        </div>
+
+        <!-- Progress Ring -->
+        <div class="dash-card progress-card">
+            <h2>🎯 Overall Progress</h2>
+            <div class="progress-ring-container">
+                <svg class="progress-ring" viewBox="0 0 120 120">
+                    <circle class="progress-ring-bg" cx="60" cy="60" r="52" />
+                    <circle class="progress-ring-fill" cx="60" cy="60" r="52"
+                            stroke-dasharray="326.73"
+                            stroke-dashoffset="{{ 326.73 - (326.73 * overall_progress / 100) }}" />
+                </svg>
+                <div class="progress-ring-text">
+                    <span class="progress-ring-value">{{ overall_progress }}%</span>
+                    <span class="progress-ring-label">Complete</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Activity Chart -->
+        <div class="dash-card chart-card wide-card">
+            <h2>📈 Weekly Activity</h2>
+            <div class="chart-container chart-wide">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Tasks -->
+        <div class="dash-card recent-card">
+            <div class="card-header-row">
+                <h2>📋 Recent Tasks</h2>
+                <a href="/tasks" class="view-all">View All →</a>
+            </div>
+            {% if recent_tasks %}
+            <div class="recent-list">
+                {% for task in recent_tasks %}
+                <div class="recent-item">
+                    <div class="recent-item-left">
+                        <span class="priority-dot priority-{{ task.priority }}"></span>
+                        <div>
+                            <span class="recent-title">{{ task.title }}</span>
+                            <span class="recent-meta">
+                                <span class="status-badge status-{{ task.status }}">{{ task.status.replace('_', ' ') }}</span>
+                                {% if task.due_date %}
+                                · Due {{ task.due_date.strftime('%b %d') }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="recent-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: {{ task.progress }}%"></div>
+                        </div>
+                        <span class="progress-text">{{ task.progress }}%</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No tasks yet. <a href="/tasks/new">Create your first task!</a></p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Updates -->
+        <div class="dash-card recent-card">
+            <div class="card-header-row">
+                <h2>📝 Recent Updates</h2>
+                <a href="/daily-updates" class="view-all">View All →</a>
+            </div>
+            {% if recent_updates %}
+            <div class="recent-list">
+                {% for update in recent_updates %}
+                <div class="recent-item">
+                    <div class="recent-item-left">
+                        <span class="update-dot"></span>
+                        <div>
+                            <span class="recent-title">{{ update.content[:60] }}{{ '...' if update.content|length > 60 }}</span>
+                            <span class="recent-meta">
+                                {{ update.date.strftime('%b %d') }}
+                                {% if update.task %} · {{ update.task.title[:30] }}{% endif %}
+                                · {{ update.hours_spent }}h
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No updates yet. <a href="/daily-updates">Log your first update!</a></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Task Distribution Donut Chart
+    const taskCtx = document.getElementById('taskChart');
+    if (taskCtx) {
+        const todoCount = {{ todo_tasks }};
+        const inProgressCount = {{ in_progress_tasks }};
+        const doneCount = {{ done_tasks }};
+        const hasData = todoCount + inProgressCount + doneCount > 0;
+
+        new Chart(taskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['To Do', 'In Progress', 'Done'],
+                datasets: [{
+                    data: hasData ? [todoCount, inProgressCount, doneCount] : [1],
+                    backgroundColor: hasData
+                        ? ['rgba(99, 102, 241, 0.8)', 'rgba(245, 158, 11, 0.8)', 'rgba(16, 185, 129, 0.8)']
+                        : ['rgba(255,255,255,0.08)'],
+                    borderColor: hasData
+                        ? ['rgba(99, 102, 241, 1)', 'rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)']
+                        : ['rgba(255,255,255,0.15)'],
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '68%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 15, 26, 0.9)',
+                        titleColor: '#f1f5f9',
+                        bodyColor: '#f1f5f9',
+                        cornerRadius: 12,
+                        padding: 12
+                    }
+                }
+            }
+        });
+    }
+
+    // Weekly Activity Bar Chart
+    fetch('/api/dashboard-stats')
+        .then(r => r.json())
+        .then(data => {
+            const weeklyCtx = document.getElementById('weeklyChart');
+            if (weeklyCtx && data.weekly) {
+                new Chart(weeklyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.weekly.map(d => d.date),
+                        datasets: [{
+                            label: 'Updates',
+                            data: data.weekly.map(d => d.count),
+                            backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                            borderColor: 'rgba(99, 102, 241, 1)',
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'rgba(255,255,255,0.5)', stepSize: 1 },
+                                grid: { color: 'rgba(255,255,255,0.06)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255,255,255,0.5)' },
+                                grid: { display: false }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 15, 26, 0.9)',
+                                titleColor: '#f1f5f9',
+                                bodyColor: '#f1f5f9',
+                                cornerRadius: 12,
+                                padding: 12
+                            }
+                        }
+                    }
+                });
+            }
+        });
+});
+</script>
+{% endblock %}

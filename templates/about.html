@@ -1,29 +1,45 @@
 {% extends 'base.html' %}
+{% block title %}About — FlowDesk{% endblock %}
 
-{% block body %}    
-<div class="about-hero">
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block body %}
+<div class="home-hero about-hero-page">
     <div class="hero-content">
-        <h1>About Attendance Management System</h1>
-        <p class="subtitle">Your trusted solution for efficient attendance tracking and management.</p>
+        <h1>About <span class="gradient-text">FlowDesk</span></h1>
+        <p class="subtitle">Your trusted companion for productivity and progress tracking.</p>
     </div>
+</div>
 
-<section class="about-section">
-    <h2>Our Mission</h2>
-    <p>At Attendance Management System, our mission is to provide a user-friendly and reliable platform that simplifies attendance tracking for schools, businesses, and organizations. We aim to enhance productivity and streamline administrative tasks through innovative technology.</p>
+<section class="about-content">
+    <div class="about-grid">
+        <div class="about-block">
+            <h2>🎯 Our Mission</h2>
+            <p>FlowDesk is built to simplify how you track attendance, manage tasks, and journal your daily work. We believe productivity tools should be beautiful, intuitive, and empowering — not another source of friction.</p>
+        </div>
 
-    <h2>Our Story</h2>
-    <p>Founded in 2026, Attendance Management System was born out of the need for a more efficient way to manage attendance. Our team of developers and educators came together to create a solution that addresses the challenges of traditional attendance methods while embracing modern technology.</p>
+        <div class="about-block">
+            <h2>📖 Our Story</h2>
+            <p>Founded in 2026, FlowDesk was born from a simple need: one place to check in, track tasks, and see your progress at a glance. No complex project management suites — just a clean, focused productivity hub.</p>
+        </div>
 
-    <h2>Why Choose Us?</h2>
-    <ul>
-        <li><strong>Easy to Use:</strong> Our intuitive interface makes it simple for users of all technical levels to navigate and utilize our platform effectively.</li>
-        <li><strong>Comprehensive Features:</strong> From real-time attendance tracking to detailed reporting, we offer a wide range of features to meet your needs.</li>
-        <li><strong>Secure & Private:</strong> We prioritize the security and privacy of your data with industry-standard measures in place.</li>
-        <li><strong>Dedicated Support:</strong> Our support team is always ready to assist you with any questions or issues you may encounter.</li>
-    </ul>
+        <div class="about-block">
+            <h2>✨ What Makes Us Different</h2>
+            <ul>
+                <li><strong>Unified Dashboard:</strong> Attendance + tasks + updates in one view</li>
+                <li><strong>Progress Analytics:</strong> Visual charts and streaks to keep you motivated</li>
+                <li><strong>Daily Journaling:</strong> Log what you worked on, not just what's left</li>
+                <li><strong>Beautiful Design:</strong> A premium dark-mode interface that's a joy to use</li>
+                <li><strong>Private & Secure:</strong> Your data stays yours with hashed passwords</li>
+            </ul>
+        </div>
 
-    <h2>Contact Us</h2>
-    <p>If you have any questions or would like to learn more about our services, please don't hesitate to contact us at <a href="mailto:info@attendancemanagement.com">info@attendancemanagement.com</a>.</p>   
+        <div class="about-block">
+            <h2>📬 Contact</h2>
+            <p>Questions or feedback? Reach out at <a href="mailto:info@flowdesk.app">info@flowdesk.app</a>.</p>
+        </div>
+    </div>
 </section>
-
 {% endblock %}

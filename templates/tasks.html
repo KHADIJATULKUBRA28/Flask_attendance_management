@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Tasks — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/tasks.css">
+{% endblock %}
+
+{% block body %}
+<div class="tasks-page">
+    <div class="tasks-header">
+        <div>
+            <h1>📋 Tasks</h1>
+            <p class="tasks-subtitle">Manage and track your work</p>
+        </div>
+        <a href="/tasks/new" class="btn-new-task" id="new-task-btn">+ New Task</a>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <a href="/tasks?status=all" class="filter-tab {{ 'active' if current_status == 'all' }}" id="filter-all">
+            All <span class="filter-count">{{ stats.all }}</span>
+        </a>
+        <a href="/tasks?status=todo" class="filter-tab {{ 'active' if current_status == 'todo' }}" id="filter-todo">
+            To Do <span class="filter-count">{{ stats.todo }}</span>
+        </a>
+        <a href="/tasks?status=in_progress" class="filter-tab {{ 'active' if current_status == 'in_progress' }}" id="filter-progress">
+            In Progress <span class="filter-count">{{ stats.in_progress }}</span>
+        </a>
+        <a href="/tasks?status=done" class="filter-tab {{ 'active' if current_status == 'done' }}" id="filter-done">
+            Done <span class="filter-count">{{ stats.done }}</span>
+        </a>
+    </div>
+
+    <!-- Task List -->
+    {% if tasks %}
+    <div class="task-list">
+        {% for task in tasks %}
+        <div class="task-card" id="task-{{ task.id }}">
+            <div class="task-top-row">
+                <div class="task-title-area">
+                    <span class="priority-badge priority-{{ task.priority }}">{{ task.priority|upper }}</span>
+                    <h3 class="task-title">{{ task.title }}</h3>
+                </div>
+                <div class="task-actions">
+                    <form method="POST" action="/tasks/{{ task.id }}/update-status" class="inline-form">
+                        {% if task.status == 'todo' %}
+                        <input type="hidden" name="status" value="in_progress">
+                        <button type="submit" class="btn-action btn-start" title="Start">▶</button>
+                        {% elif task.status == 'in_progress' %}
+                        <input type="hidden" name="status" value="done">
+                        <button type="submit" class="btn-action btn-complete" title="Complete">✓</button>
+                        {% else %}
+                        <input type="hidden" name="status" value="todo">
+                        <button type="submit" class="btn-action btn-reopen" title="Reopen">↺</button>
+                        {% endif %}
+                    </form>
+                    <a href="/tasks/{{ task.id }}/edit" class="btn-action btn-edit" title="Edit">✎</a>
+                    <form method="POST" action="/tasks/{{ task.id }}/delete" class="inline-form" onsubmit="return confirm('Delete this task?')">
+                        <button type="submit" class="btn-action btn-delete" title="Delete">🗑</button>
+                    </form>
+                </div>
+            </div>
+
+            {% if task.description %}
+            <p class="task-desc">{{ task.description[:120] }}{{ '...' if task.description|length > 120 }}</p>
+            {% endif %}
+
+            <div class="task-bottom-row">
+                <div class="task-meta">
+                    <span class="status-badge status-{{ task.status }}">{{ task.status.replace('_', ' ') }}</span>
+                    {% if task.due_date %}
+                    <span class="due-date {% if task.due_date < today %}overdue{% endif %}">
+                        📅 {{ task.due_date.strftime('%b %d, %Y') }}
+                        {% if task.due_date < today %}<span class="overdue-text">Overdue</span>{% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="task-progress-area">
+                    <div class="task-progress-bar">
+                        <div class="task-progress-fill status-fill-{{ task.status }}" style="width: {{ task.progress }}%"></div>
+                    </div>
+                    <span class="task-progress-text">{{ task.progress }}%</span>
+                </div>
+            </div>
+
+            <!-- Inline Progress Slider -->
+            <form method="POST" action="/tasks/{{ task.id }}/update-progress" class="progress-slider-form">
+                <input type="range" name="progress" min="0" max="100" value="{{ task.progress }}"
+                       class="progress-slider" id="slider-{{ task.id }}"
+                       oninput="this.nextElementSibling.textContent = this.value + '%'"
+                       onchange="this.form.submit()">
+                <span class="slider-label">{{ task.progress }}%</span>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-large">
+        <div class="empty-icon">📋</div>
+        <h2>No tasks{% if current_status != 'all' %} with status "{{ current_status.replace('_', ' ') }}"{% endif %}</h2>
+        <p>Start by creating your first task to begin tracking your work.</p>
+        <a href="/tasks/new" class="cta-btn cta-primary" id="empty-new-task">Create a Task</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Inject today's date for overdue check
+const today = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}

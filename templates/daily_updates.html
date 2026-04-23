@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Daily Updates — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/daily_updates.css">
+{% endblock %}
+
+{% block body %}
+<div class="updates-page">
+    <div class="updates-header">
+        <div>
+            <h1>📝 Daily Updates</h1>
+            <p class="updates-subtitle">Journal your work progress — {{ total_hours }} total hours logged</p>
+        </div>
+    </div>
+
+    <!-- New Update Form -->
+    <div class="update-form-card">
+        <h2>Log an Update</h2>
+        <form method="POST" action="/daily-updates/new" id="update-form">
+            <div class="update-form-grid">
+                <div class="form-group form-full">
+                    <label for="content">What did you work on?</label>
+                    <textarea id="content" name="content" rows="3" placeholder="Describe what you accomplished today..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="task_id">Related Task <span class="optional">(optional)</span></label>
+                    <select id="task_id" name="task_id">
+                        <option value="">— No specific task —</option>
+                        {% for task in user_tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hours_spent">Hours Spent</label>
+                    <input type="number" id="hours_spent" name="hours_spent" min="0" max="24" step="0.5" value="1" required>
+                </div>
+            </div>
+            <button type="submit" class="form-submit" id="submit-update">Log Update</button>
+        </form>
+    </div>
+
+    <!-- Updates Timeline -->
+    {% if grouped_updates %}
+    <div class="updates-timeline">
+        {% for key, group in grouped_updates.items() %}
+        <div class="timeline-day">
+            <div class="timeline-date-badge">
+                <span class="timeline-date">{{ group.date.strftime('%b %d') }}</span>
+                <span class="timeline-day-name">{{ group.date.strftime('%A') }}</span>
+            </div>
+            <div class="timeline-entries">
+                {% for update in group.updates %}
+                <div class="timeline-entry">
+                    <div class="entry-content">
+                        <p>{{ update.content }}</p>
+                        <div class="entry-meta">
+                            {% if update.task %}
+                            <span class="entry-task">📋 {{ update.task.title }}</span>
+                            {% endif %}
+                            <span class="entry-hours">⏱ {{ update.hours_spent }}h</span>
+                            <span class="entry-time">{{ update.created_at.strftime('%I:%M %p') }}</span>
+                        </div>
+                    </div>
+                    <form method="POST" action="/daily-updates/{{ update.id }}/delete" class="inline-form"
+                          onsubmit="return confirm('Delete this update?')">
+                        <button type="submit" class="btn-delete-entry" title="Delete">🗑</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-large">
+        <div class="empty-icon">📝</div>
+        <h2>No updates yet</h2>
+        <p>Start logging your daily work to track progress over time.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

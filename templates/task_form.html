@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit Task' if editing else 'New Task' }} — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/forms.css">
+<link rel="stylesheet" href="/static/css/tasks.css">
+{% endblock %}
+
+{% block body %}
+<div class="form-page">
+    <div class="form-card form-wide">
+        <div class="form-header">
+            <div class="form-icon">{{ '✎' if editing else '📋' }}</div>
+            <h1>{{ 'Edit Task' if editing else 'Create New Task' }}</h1>
+            <p>{{ 'Update the details of your task' if editing else 'Fill in the details to create a new task' }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('edit_task', task_id=task.id) if editing else url_for('new_task') }}" id="task-form">
+            <div class="form-group">
+                <label for="title">Task Title</label>
+                <input type="text" id="title" name="title" placeholder="What needs to be done?"
+                       value="{{ task.title if editing else '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description <span class="optional">(optional)</span></label>
+                <textarea id="description" name="description" rows="3"
+                          placeholder="Add more details about this task...">{{ task.description if editing and task.description else '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority">
+                        <option value="low" {{ 'selected' if editing and task.priority == 'low' }}>🟢 Low</option>
+                        <option value="medium" {{ 'selected' if editing and task.priority == 'medium' else ('selected' if not editing) }}>🟡 Medium</option>
+                        <option value="high" {{ 'selected' if editing and task.priority == 'high' }}>🟠 High</option>
+                        <option value="urgent" {{ 'selected' if editing and task.priority == 'urgent' }}>🔴 Urgent</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="due_date">Due Date <span class="optional">(optional)</span></label>
+                    <input type="date" id="due_date" name="due_date"
+                           value="{{ task.due_date.strftime('%Y-%m-%d') if editing and task.due_date else '' }}">
+                </div>
+            </div>
+
+            {% if editing %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="todo" {{ 'selected' if task.status == 'todo' }}>📌 To Do</option>
+                        <option value="in_progress" {{ 'selected' if task.status == 'in_progress' }}>🔄 In Progress</option>
+                        <option value="done" {{ 'selected' if task.status == 'done' }}>✅ Done</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="progress">Progress: <span id="progress-display">{{ task.progress }}%</span></label>
+                    <input type="range" id="progress" name="progress" min="0" max="100"
+                           value="{{ task.progress }}" class="form-slider"
+                           oninput="document.getElementById('progress-display').textContent = this.value + '%'">
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <a href="/tasks" class="btn-cancel">Cancel</a>
+                <button type="submit" class="form-submit" id="task-submit">{{ 'Save Changes' if editing else 'Create Task' }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

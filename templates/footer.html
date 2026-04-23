@@ -1,8 +1,21 @@
 {%- block footer -%}
-    <footer>
-        <p>&copy; 2026 Attendance Management System. All rights reserved.</p>
-        <p style="margin-top: 10px; font-size: 0.82rem; opacity: 0.6;">
-            <a href="/">Home</a> &nbsp;·&nbsp; <a href="/about">About</a> &nbsp;·&nbsp; <a href="/login">Login</a> &nbsp;·&nbsp; <a href="/signup">Sign Up</a>
-        </p>
-    </footer>
+<footer>
+    <div class="footer-content">
+        <div class="footer-brand">
+            <span class="logo-icon">⚡</span> FlowDesk
+        </div>
+        <p>&copy; 2026 FlowDesk. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <span class="footer-dot">·</span>
+            <a href="/about">About</a>
+            {% if user %}
+            <span class="footer-dot">·</span>
+            <a href="/dashboard">Dashboard</a>
+            <span class="footer-dot">·</span>
+            <a href="/tasks">Tasks</a>
+            {% endif %}
+        </div>
+    </div>
+</footer>
 {%- endblock -%}

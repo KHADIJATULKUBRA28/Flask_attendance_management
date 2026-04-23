@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
+{% block title %}Sign Up — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/forms.css">
+{% endblock %}
 
 {% block body %}
-    <h1>Sign Up</h1>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-        <form method="POST" action="/signup">
-        <p>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name">
-        </p>
-        <p>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email">
-        </p>
-        <p>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-        </p>
-        <p>
-            <input type="submit" value="Signup">
-        </p>
-    </form>
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="form-icon">🚀</div>
+            <h1>Create Account</h1>
+            <p>Start your productivity journey with FlowDesk</p>
+        </div>
+        <form method="POST" action="/signup" id="signup-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required minlength="4">
+            </div>
+            <button type="submit" class="form-submit" id="signup-submit">Create Account</button>
+        </form>
+        <div class="form-footer">
+            <p>Already have an account? <a href="/login">Log in</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}

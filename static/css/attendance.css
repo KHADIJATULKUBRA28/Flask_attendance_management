@@ -1,0 +1,43 @@
+/* ===== FlowDesk — Attendance ===== */
+.attendance-page { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+.attendance-header { margin-bottom: 28px; }
+.attendance-header h1 { font-size: 1.8rem; font-weight: 800; margin: 0; }
+.attendance-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin: 4px 0 0; }
+
+.attendance-today { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 32px; }
+.today-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 28px; backdrop-filter: blur(10px); }
+.today-card h2 { font-size: 1.1rem; margin-bottom: 18px; }
+.today-actions { display: flex; flex-direction: column; gap: 12px; }
+.check-info { display: flex; flex-direction: column; gap: 10px; }
+.check-row { display: flex; align-items: center; gap: 10px; }
+.check-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+.check-value { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+.check-value.success { color: var(--success); }
+.late-badge { background: var(--warning-bg); color: var(--warning); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+.no-checkin-msg { color: var(--text-secondary); font-size: 0.9rem; margin: 0 0 12px; }
+
+.stats-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.mini-stat { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 20px; text-align: center; backdrop-filter: blur(10px); transition: all var(--transition-normal); }
+.mini-stat:hover { border-color: var(--card-border-hover); transform: translateY(-2px); }
+.mini-stat-value { display: block; font-size: 1.8rem; font-weight: 800; color: var(--primary-light); }
+.mini-stat-label { display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+.attendance-history { margin-top: 16px; }
+.attendance-history h2 { font-size: 1.3rem; margin-bottom: 18px; }
+.history-table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--card-border); }
+.history-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.history-table thead { background: rgba(255,255,255,0.04); }
+.history-table th { padding: 14px 18px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--card-border); }
+.history-table td { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-primary); }
+.history-table tr:hover td { background: rgba(255,255,255,0.03); }
+.history-table tr:last-child td { border-bottom: none; }
+
+.att-status { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+.att-present { background: var(--success-bg); color: var(--success); }
+.att-late { background: var(--warning-bg); color: var(--warning); }
+.att-absent { background: var(--danger-bg); color: var(--danger); }
+
+@media (max-width:700px) {
+    .attendance-today { grid-template-columns: 1fr; }
+    .stats-cards { grid-template-columns: 1fr; }
+}

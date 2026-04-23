@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Attendance — FlowDesk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/attendance.css">
+{% endblock %}
+
+{% block body %}
+<div class="attendance-page">
+    <div class="attendance-header">
+        <div>
+            <h1>📅 Attendance</h1>
+            <p class="attendance-subtitle">Track your daily check-ins and view history</p>
+        </div>
+    </div>
+
+    <!-- Today's Status + Actions -->
+    <div class="attendance-today">
+        <div class="today-card">
+            <h2>Today</h2>
+            <div class="today-actions">
+                {% if today_record and today_record.check_in %}
+                <div class="check-info">
+                    <div class="check-row">
+                        <span class="check-label">Check In:</span>
+                        <span class="check-value success">{{ today_record.check_in.strftime('%I:%M %p') }}</span>
+                        {% if today_record.status == 'late' %}<span class="late-badge">Late</span>{% endif %}
+                    </div>
+                    {% if today_record.check_out %}
+                    <div class="check-row">
+                        <span class="check-label">Check Out:</span>
+                        <span class="check-value">{{ today_record.check_out.strftime('%I:%M %p') }}</span>
+                    </div>
+                    {% else %}
+                    <form method="POST" action="/attendance/checkout">
+                        <button type="submit" class="btn-checkout" id="att-checkout-btn">Check Out</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="no-checkin-msg">You haven't checked in today.</p>
+                <form method="POST" action="/attendance/checkin">
+                    <button type="submit" class="btn-checkin" id="att-checkin-btn">Check In Now</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Monthly Stats -->
+        <div class="stats-cards">
+            <div class="mini-stat">
+                <span class="mini-stat-value">{{ days_present }}</span>
+                <span class="mini-stat-label">Days Present</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-stat-value">{{ days_in_month - days_present }}</span>
+                <span class="mini-stat-label">Days Missed</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-stat-value">{{ attendance_rate }}%</span>
+                <span class="mini-stat-label">Attendance Rate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance History -->
+    <div class="attendance-history">
+        <h2>History</h2>
+        {% if records %}
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.date.strftime('%b %d, %Y (%A)') }}</td>
+                        <td>{{ record.check_in.strftime('%I:%M %p') if record.check_in else '—' }}</td>
+                        <td>{{ record.check_out.strftime('%I:%M %p') if record.check_out else '—' }}</td>
+                        <td>
+                            <span class="att-status att-{{ record.status }}">{{ record.status|capitalize }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state-large">
+            <div class="empty-icon">📅</div>
+            <h2>No attendance records yet</h2>
+            <p>Check in today to start tracking your attendance!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

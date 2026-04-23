@@ -1,15 +1,28 @@
-    <header>
-        <h1>Attendance Management System</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                {% if not user %}
-                <li><a href="/signup">Signup</a></li>
-                <li><a href="/login">Login</a></li>
-                {% else %}
-                <li><a href="/logout">Logout</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
+<header>
+    <a href="/" class="logo" id="header-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">FlowDesk</span>
+    </a>
+    <nav>
+        <ul>
+            <li><a href="/" id="nav-home">Home</a></li>
+            {% if user %}
+            <li><a href="/dashboard" id="nav-dashboard">Dashboard</a></li>
+            <li><a href="/tasks" id="nav-tasks">Tasks</a></li>
+            <li><a href="/attendance" id="nav-attendance">Attendance</a></li>
+            <li><a href="/daily-updates" id="nav-updates">Updates</a></li>
+            {% endif %}
+            <li><a href="/about" id="nav-about">About</a></li>
+            {% if not user %}
+            <li><a href="/signup" id="nav-signup">Sign Up</a></li>
+            <li><a href="/login" id="nav-login" class="nav-btn-primary">Log In</a></li>
+            {% else %}
+            <li class="nav-user">
+                <span class="user-avatar">{{ user.name[0]|upper }}</span>
+                <span class="user-name">{{ user.name }}</span>
+            </li>
+            <li><a href="/logout" id="nav-logout" class="nav-btn-danger">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
