@@ -27,6 +27,14 @@ def signup():
         name = request.form.get("name")
         email = request.form.get("email")
         password = request.form.get("password")
+        db_user=User.query.filter_by(email=email).first()
+        if db_user:
+            return render_template("signup.html", error="Email already exists")
+        
+        db_user=User.query.filter_by(name=name).first()
+        if db_user:
+            return render_template("signup.html", error="Name already exists")
+            
         user=User(name=name,email=email,password=password)
         db.session.add(user)
         db.session.commit()
